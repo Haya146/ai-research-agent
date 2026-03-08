@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+research_history.db
+.streamlit/secrets.toml
+*.db
+venv/
+.venv/
+env/
