@@ -2,8 +2,7 @@
 
 An intelligent multi-source research assistant that searches the Web, Wikipedia, and ArXiv papers to give you structured, sourced answers — with conversation memory.
 
-## 🚀 Live Demo
-👉 [Try it here](https://your-app.streamlit.app) *(deploy to Streamlit Cloud)*
+
 
 ---
 
@@ -21,39 +20,6 @@ An intelligent multi-source research assistant that searches the Web, Wikipedia,
 
 ---
 
-## ⚙️ Setup
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/ai-research-agent
-cd ai-research-agent
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Add your API key
-echo "GROQ_API_KEY=your_key_here" > .env
-# Get a free key at: console.groq.com
-
-# 4. Run
-streamlit run main.py
-```
-
----
-
-## 🗂️ Project Structure
-
-```
-ai-research-agent/
-├── main.py               ← Streamlit UI (all 5 features)
-├── research_agent.py     ← LangChain agent, tools, DB, prompts
-├── requirements.txt
-├── .env                  ← GROQ_API_KEY (never commit this!)
-├── .gitignore
-└── README.md
-```
-
----
 
 ## 🔬 Research Modes
 
@@ -77,8 +43,8 @@ ai-research-agent/
 
 ## 📸 Screenshots
 
-*(Add screenshots after deploying)*
+![alt text](images/image.png)
 
 ---
 
-Built by [Your Name] | [LinkedIn] | [your@email.com]
+Built by [Haya Mohamed]
