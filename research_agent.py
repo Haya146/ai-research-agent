@@ -1,13 +1,3 @@
-"""
-research_agent.py  —  Full upgraded version
-Features:
-  1. Source display        — tracks which tools were used + URLs found
-  2. Export ready          — returns clean markdown for download
-  3. Research mode         — Quick / Deep Dive / Academic
-  4. SQLite history        — saves every session to database
-  5. Strong system prompt  — structured output, citations, freshness warnings
-"""
-
 from dotenv import load_dotenv
 import os
 import sqlite3
@@ -23,14 +13,6 @@ from langchain_classic.memory import ConversationBufferMemory
 from langchain_core.messages import SystemMessage
 load_dotenv()
 
-# ═══════════════════════════════════════════
-# DATABASE  (Feature 4 — Search History)
-# ═══════════════════════════════════════════
-
-
-# ═══════════════════════════════════════════
-# DATABASE  (Feature 4 — Search History)
-# ═══════════════════════════════════════════
 
 DB_PATH = "research_history.db"
 
@@ -69,7 +51,7 @@ def get_history(limit: int = 20) -> list:
         (limit,)
     ).fetchall()
     conn.close()
-    return rows  # list of (id, topic, mode, timestamp)
+    return rows  
 
 def get_session_by_id(session_id: int) -> dict | None:
     """Load a full session by its ID."""
@@ -93,9 +75,7 @@ def delete_session(session_id: int):
     conn.commit()
     conn.close()
 
-# ═══════════════════════════════════════════
-# SYSTEM PROMPTS  (Feature 3 + 5)
-# ═══════════════════════════════════════════
+
 
 SYSTEM_PROMPTS = {
     "Quick Summary": """You are a concise research assistant.
@@ -135,9 +115,7 @@ When the user asks a question:
 Focus on evidence-based, scientifically accurate information."""
 }
 
-# ═══════════════════════════════════════════
-# SOURCE EXTRACTION  (Feature 1)
-# ═══════════════════════════════════════════
+
 
 def extract_sources(intermediate_steps: list) -> list:
     """
@@ -162,14 +140,11 @@ def extract_sources(intermediate_steps: list) -> list:
             "tool": tool_name,
             "query": tool_input if isinstance(tool_input, str) else str(tool_input),
             "snippet": snippet,
-            "urls": list(set(urls))[:3],   # max 3 unique URLs per tool call
+            "urls": list(set(urls))[:3],   
         })
 
     return sources
 
-# ═══════════════════════════════════════════
-# LLM + TOOLS FACTORY
-# ═══════════════════════════════════════════
 
 def build_agent(mode: str):
     """
@@ -179,7 +154,7 @@ def build_agent(mode: str):
     llm = ChatGroq(
         api_key=os.getenv("GROQ_API_KEY"),
         model="llama-3.3-70b-versatile",
-        temperature=0,          # research needs precision
+        temperature=0,        
     )
 
     tools = [
@@ -199,9 +174,6 @@ def build_agent(mode: str):
         return_messages=True,
     )
 
-    # IMPORTANT: initialize_agent expects a plain STRING for system_message,
-    # NOT a SystemMessage object. Passing a SystemMessage object causes:
-    # ValueError: Invalid template: content='...'
     agent = initialize_agent(
         tools=tools,
         llm=llm,
@@ -211,13 +183,10 @@ def build_agent(mode: str):
         handle_parsing_errors=True,
         max_iterations=8,
         early_stopping_method="generate",
-        agent_kwargs={"system_message": SYSTEM_PROMPTS[mode]},  # plain string ✅
+        agent_kwargs={"system_message": SYSTEM_PROMPTS[mode]}, 
     )
     return agent
 
-# ═══════════════════════════════════════════
-# MAIN ask_ai FUNCTION
-# ═══════════════════════════════════════════
 
 def ask_ai(agent, user_input: str) -> dict:
     """
@@ -237,7 +206,7 @@ def ask_ai(agent, user_input: str) -> dict:
     steps  = result.get("intermediate_steps", [])
     sources = extract_sources(steps)
 
-    # Feature 2 — build export markdown
+   
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     source_lines = []
     for i, s in enumerate(sources, 1):
@@ -265,5 +234,5 @@ def ask_ai(agent, user_input: str) -> dict:
         "markdown": markdown,
     }
 
-# ── Initialize DB on import ──
+
 init_db()
